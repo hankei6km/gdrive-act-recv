@@ -20,13 +20,13 @@ This action receives a file from Google Drive.
     workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
     service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-- name: Send file
+- name: Receive file
   id: send
-  uses: hankei6km/gdrive-act-send@v0.3.0
+  uses: hankei6km/gdrive-act-send@v0.3.1
   with:
     parent-id: ${{ secrets.PARENT_ID }}
-    dest-file-name: ${{ secrets.DEST_FILE_NAME }}
     src-file-name: ${{ secrets.SRC_FILE_NAME }}
+    dest-file-name: ${{ secrets.DEST_FILE_NAME }}
 ```
 
 ## Licenses
