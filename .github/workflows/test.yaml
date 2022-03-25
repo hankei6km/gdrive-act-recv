@@ -83,7 +83,7 @@ jobs:
           parent_id: ${{ secrets.PARENT_ID }}
           src_file_name: gdrive-act-send-test-readme.doc
           dest_file_name: test.md
-          dest_mime_type: text/markdown
+          dest_mime_type: text/plain
 
       - name: Receive file(src is not exist)
         id: recv_failed
