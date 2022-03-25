@@ -1,0 +1,100 @@
+name: Test action code
+on:
+  push:
+    branches:
+      - "**"
+      #- '!main'
+    tags:
+      - "!v*"
+
+jobs:
+  test-modules:
+    runs-on: ubuntu-latest
+    name: Test modules
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-push-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-push-${{ env.cache-name }}-
+            ${{ runner.os }}-push-
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Run build
+        run: npm run test:build
+
+      - name: Diff built files
+        run: |
+          git diff --exit-code --quiet dist/index.js
+          git diff --exit-code --quiet dist/index.d.ts
+          git diff --exit-code --quiet dist/licenses.txt
+          git diff --exit-code --quiet dist/package.json
+          git diff --exit-code --quiet README.md
+
+      - name: Run tests
+        run: npm run test:build
+
+  test-main:
+    permissions:
+      contents: "read"
+      id-token: "write"
+    runs-on: ubuntu-latest
+    name: Test main
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
+      - name: Receive file(normal end)
+        id: recv
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-send-test-readme.md
+          dest_file_name: test.md
+
+      - name: Check file_id
+        run: test -n "${FILE_ID}"
+        env:
+          FILE_ID: ${{ steps.recv.outputs.file_id }}
+
+      - name: Receive file(with mime type)
+        id: send_with_mime
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-send-test-readme.doc
+          dest_file_name: test.md
+          dest_mime_type: text/markdown
+
+      - name: Receive file(src is not exist)
+        id: recv_failed
+        continue-on-error: true
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-send-test-readme-test-not-exist.md
+          dest_file_name: test.md
+
+      - name: Check failure
+        run: test "${FAILURE}" = "failure"
+        env:
+          FAILURE: ${{ steps.recv_failed.outcome }}
