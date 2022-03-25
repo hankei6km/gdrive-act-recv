@@ -1,0 +1,169 @@
+name: Test action code
+on:
+  push:
+    branches:
+      - "**"
+      #- '!main'
+    tags:
+      - "!v*"
+
+jobs:
+  test-modules:
+    runs-on: ubuntu-latest
+    name: Test modules
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-push-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-push-${{ env.cache-name }}-
+            ${{ runner.os }}-push-
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Run build
+        run: npm run test:build
+
+      - name: Diff built files
+        run: |
+          git diff --exit-code --quiet dist/index.js
+          git diff --exit-code --quiet dist/index.d.ts
+          git diff --exit-code --quiet dist/licenses.txt
+          git diff --exit-code --quiet dist/package.json
+          git diff --exit-code --quiet README.md
+
+      - name: Run tests
+        run: npm run test:build
+
+  test-main:
+    permissions:
+      contents: "read"
+      id-token: "write"
+    runs-on: ubuntu-latest
+    name: Test main
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
+      - name: Send file(text)
+        id: send_text
+        uses: hankei6km/gdrive-act-send@v0.3.0
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          dest_file_name: gdrive-act-recv-test-readme.md
+          src_file_name: README.md
+
+      - name: Send file(doc)
+        id: send_doc
+        uses: hankei6km/gdrive-act-send@v0.3.0
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          dest_file_name: gdrive-act-recv-test-readme.doc
+          src_file_name: README.md
+          dest_mime_type: application/vnd.google-apps.document
+          src_mime_type: text/plain
+
+      - name: Receive file(text with src_file_name)
+        id: recv_text
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-recv-test-readme.md
+          dest_file_name: test_text.md
+
+      - name: Check content && file_id(text with src_file_name)
+        run: |
+          diff -q README.md test_text.md
+          test "${FILE_ID_SEND}" = "${FILE_ID_RECV}"
+        env:
+          FILE_ID_SEND: ${{ steps.send_text.outputs.file_id }}
+          FILE_ID_RECV: ${{ steps.recv_text.outputs.file_id }}
+
+      - name: Receive file(text with file_id)
+        id: recv_text_id
+        uses: ./
+        with:
+          file_id: ${{ steps.send_text.outputs.file_id }}
+          src_file_name: gdrive-act-recv-test-readme.md
+          dest_file_name: test_text.md
+
+      - name: Check content && file_id(text with file_id)
+        run: |
+          diff -q README.md test_text.md
+          test "${FILE_ID_SEND}" = "${FILE_ID_RECV}"
+        env:
+          FILE_ID_SEND: ${{ steps.send_text.outputs.file_id }}
+          FILE_ID_RECV: ${{ steps.recv_text_id.outputs.file_id }}
+
+      - name: Receive file(doc with src_file_name)
+        id: recv_doc
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-recv-test-readme.doc
+          dest_file_name: test_doc.md
+          dest_mime_type: text/plain
+
+      - name: Check file_id(doc with src_file_name)
+        run: test "${FILE_ID_SEND}" = "${FILE_ID_RECV}"
+        env:
+          FILE_ID_SEND: ${{ steps.send_doc.outputs.file_id }}
+          FILE_ID_RECV: ${{ steps.recv_doc.outputs.file_id }}
+
+      - name: Receive file(doc with file_id)
+        id: recv_doc_id
+        uses: ./
+        with:
+          file_id: ${{ steps.send_doc.outputs.file_id }}
+          dest_file_name: test_doc_id.md
+          dest_mime_type: text/plain
+
+      - name: Check file_id(doc with file_id)
+        run: test "${FILE_ID_SEND}" = "${FILE_ID_RECV}"
+        env:
+          FILE_ID_SEND: ${{ steps.send_doc.outputs.file_id }}
+          FILE_ID_RECV: ${{ steps.recv_doc_id.outputs.file_id }}
+
+      - name: Receive file(src_file_name is not exist)
+        id: recv_failed
+        continue-on-error: true
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-send-test-readme-test-not-exist.md
+          dest_file_name: test.md
+      - name: Check failure(src_file_name)
+        run: test "${FAILURE}" = "failure"
+        env:
+          FAILURE: ${{ steps.recv_failed.outcome }}
+
+      - name: Receive file(file_id is not exist)
+        id: recv_failed_id
+        continue-on-error: true
+        uses: ./
+        with:
+          file_id: xxxxxxxx
+          dest_file_name: test.md
+
+      - name: Check failure(src_file_name)
+        run: test "${FAILURE}" = "failure"
+        env:
+          FAILURE: ${{ steps.recv_failed_id.outcome }}
