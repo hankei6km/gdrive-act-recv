@@ -21,8 +21,8 @@ This action receives a file from Google Drive.
     service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
 - name: Receive file
-  id: send
-  uses: hankei6km/gdrive-act-send@v0
+  id: receive
+  uses: hankei6km/gdrive-act-recv@v0
   with:
     parent-id: ${{ secrets.PARENT_ID }}
     src-file-name: ${{ secrets.SRC_FILE_NAME }}
