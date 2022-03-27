@@ -75,7 +75,7 @@ jobs:
 
       - name: Send file(text)
         id: send_text
-        uses: hankei6km/gdrive-act-send@v0.3.0
+        uses: hankei6km/gdrive-act-send@v0
         with:
           parent_id: ${{ secrets.PARENT_ID }}
           dest_file_name: gdrive-act-recv-test-readme.md
@@ -83,7 +83,7 @@ jobs:
 
       - name: Send file(doc)
         id: send_doc
-        uses: hankei6km/gdrive-act-send@v0.3.0
+        uses: hankei6km/gdrive-act-send@v0
         with:
           parent_id: ${{ secrets.PARENT_ID }}
           dest_file_name: gdrive-act-recv-test-readme.doc
