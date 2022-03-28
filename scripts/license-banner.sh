@@ -3,7 +3,7 @@ set -e
 
 cat << EOF
 /*
- * $(jq < package.json -r .name)
+ * hankei6km/gdrive-act-recv
  * @copyright (c) 2022 hankei6km
  * @license MIT
  * Open Source Licenses: ${1}
