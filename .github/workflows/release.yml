@@ -54,7 +54,9 @@ jobs:
           asset_content_type: application/zip
 
       - name: Prepend license banner into dist/index.mjs
-        run: bash scripts/license-banner.sh "${DOWNLOAD_URL}" >> dist/index.mjs
+        run: |
+          bash scripts/license-banner.sh "${DOWNLOAD_URL}" | cat - dist/index.mjs > tmp.txt
+          mv tmp.txt dist/index.mjs
         env:
           DOWNLOAD_URL: ${{ steps.upload-release-asset.outputs.browser_download_url }}
 
