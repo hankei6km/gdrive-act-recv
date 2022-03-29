@@ -1,12 +1,21 @@
 import * as core from "@actions/core";
 import { driveClient, recvFile } from "guratan";
 
+export function optionalBoolean(s: string): boolean | undefined {
+  const t = core.getInput(s);
+  if (t === undefined || t === "undefined" || t === "") {
+    return;
+  }
+  return core.getBooleanInput(s);
+}
+
 try {
   const fileId = core.getInput("file_id");
   const parentId = core.getInput("parent_id");
   const srcFileName = core.getInput("src_file_name");
   const destFileName = core.getInput("dest_file_name");
   const destMimeType = core.getInput("dest_mime_type");
+  const removeBom = optionalBoolean("remove_bom");
   if (typeof fileId !== "string") {
     throw new Error(`file_id: the input is invalid : ${fileId}`);
   }
@@ -29,6 +38,7 @@ try {
     srcFileName,
     destFileName,
     destMimeType,
+    removeBom,
   });
   core.setOutput("file_id", file_id);
 } catch (err: any) {

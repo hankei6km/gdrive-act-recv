@@ -19,6 +19,7 @@ This action receives a file from Google Drive.
 | src_file_name | The name of the file in remote. When there are multiple files with the same parent id and the same name, only one of them is received. | `false` |  |
 | dest_file_name | The name(path) of the file in local filesystem | `true` |  |
 | dest_mime_type | The MIME type of the file. | `false` |  |
+| remove_bom | Remove BOM chars in receiving content | `false` |  |
 
 
 ## Outputs
