@@ -21,6 +21,10 @@ inputs:
     description: "The MIME type of the file."
     required: false
     default: ""
+  remove_bom:
+    description: "Remove BOM chars in receiving content"
+    required: false
+    default: ""
 outputs:
   file_id:
     description: "The ID of the file that is sended into Google Drive"

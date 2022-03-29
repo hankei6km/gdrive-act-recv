@@ -138,6 +138,22 @@ jobs:
           FILE_ID_SEND: ${{ steps.send_doc.outputs.file_id }}
           FILE_ID_RECV: ${{ steps.recv_doc.outputs.file_id }}
 
+      - name: Check BOM is included(doc with src_file_name)
+        run: file test_doc.md | grep BOM
+
+      - name: Receive file(doc with src_file_name, remove_bom)
+        id: recv_doc_remove_bom
+        uses: ./
+        with:
+          parent_id: ${{ secrets.PARENT_ID }}
+          src_file_name: gdrive-act-recv-test-readme.doc
+          dest_file_name: test_doc.md
+          dest_mime_type: text/plain
+          remove_bom: true
+
+      - name: Check BOM is not included(doc with src_file_name, remove_bom)
+        run: file test_doc.md | grep -v BOM
+
       - name: Receive file(doc with file_id)
         id: recv_doc_id
         uses: ./
