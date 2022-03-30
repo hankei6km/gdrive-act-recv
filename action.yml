@@ -1,4 +1,4 @@
-name: "Google Drive tools Action - send"
+name: "Google Drive tools Action - recv"
 description: "This action sends a file to Google Drive"
 inputs:
   file_id:
