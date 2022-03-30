@@ -22,7 +22,7 @@ This action receives a file from Google Drive.
 
 - name: Receive file
   id: receive
-  uses: hankei6km/gdrive-act-recv@v0
+  uses: hankei6km/gdrive-act-recv@v:CUR_VER
   with:
     parent-id: ${{ secrets.PARENT_ID }}
     src-file-name: ${{ secrets.SRC_FILE_NAME }}
