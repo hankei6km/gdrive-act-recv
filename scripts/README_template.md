@@ -29,6 +29,11 @@ This action receives a file from Google Drive.
     dest-file-name: ${{ secrets.DEST_FILE_NAME }}
 ```
 
+## Related
+
+- [Google Drive tools Action - send](https://github.com/hankei6km/gdrive-act-send)
+- [Google Drive tools Action - share](https://github.com/hankei6km/gdrive-act-share)
+
 ## Licenses
 
 MIT License
