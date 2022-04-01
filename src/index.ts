@@ -40,6 +40,8 @@ try {
     destMimeType,
     removeBom,
   });
+
+  core.setSecret(file_id);
   core.setOutput("file_id", file_id);
 } catch (err: any) {
   core.setFailed(err.message);
