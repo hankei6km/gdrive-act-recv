@@ -13,7 +13,7 @@ This action receives a file from Google Drive.
 ## Inputs
 
 | parameter | description | required | default |
-| - | - | - | - |
+| --- | --- | --- | --- |
 | file_id | The ID of the file or shared drive. | `false` |  |
 | parent_id | The ID of the parent folders in remote | `false` |  |
 | src_file_name | The name of the file in remote. When there are multiple files with the same parent id and the same name, only one of them is received. | `false` |  |
@@ -25,7 +25,7 @@ This action receives a file from Google Drive.
 ## Outputs
 
 | parameter | description |
-| - | - |
+| --- | --- |
 | file_id | The ID of the file that is sended into Google Drive. Be careful, the ID of the file can also be sensitive data. |
 
 
