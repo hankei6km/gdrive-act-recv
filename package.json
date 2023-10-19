@@ -1,6 +1,6 @@
 {
   "name": "@hankei6km/gdrive-act-recv",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "This action receives a file from Google Drive.",
   "author": "hankei6km <hankei6km@gmail.com> (https://github.com/hankei6km)",
   "license": "MIT",
