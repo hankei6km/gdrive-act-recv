@@ -12,21 +12,21 @@ This action receives a file from Google Drive.
 
 ## Inputs
 
-| parameter | description | required | default |
+| name | description | required | default |
 | --- | --- | --- | --- |
-| file_id | The ID of the file or shared drive. | `false` |  |
-| parent_id | The ID of the parent folders in remote | `false` |  |
-| src_file_name | The name of the file in remote. When there are multiple files with the same parent id and the same name, only one of them is received. | `false` |  |
-| dest_file_name | The name(path) of the file in local filesystem | `true` |  |
-| dest_mime_type | The MIME type of the file. | `false` |  |
-| remove_bom | Remove BOM chars in receiving content | `false` |  |
+| `file_id` | <p>The ID of the file or shared drive.</p> | `false` | `""` |
+| `parent_id` | <p>The ID of the parent folders in remote</p> | `false` | `""` |
+| `src_file_name` | <p>The name of the file in remote. When there are multiple files with the same parent id and the same name, only one of them is received.</p> | `false` | `""` |
+| `dest_file_name` | <p>The name(path) of the file in local filesystem</p> | `true` | `""` |
+| `dest_mime_type` | <p>The MIME type of the file.</p> | `false` | `""` |
+| `remove_bom` | <p>Remove BOM chars in receiving content</p> | `false` | `""` |
 
 
 ## Outputs
 
-| parameter | description |
+| name | description |
 | --- | --- |
-| file_id | The ID of the file that is sended into Google Drive. Be careful, the ID of the file can also be sensitive data. |
+| `file_id` | <p>The ID of the file that is sended into Google Drive. Be careful, the ID of the file can also be sensitive data.</p> |
 
 
 ## Runs
