@@ -8,7 +8,6 @@ This action receives a file from Google Drive.
 
 **Required** path to Service Account Credentials JSON file.
 
-<!-- action-docs-inputs source="action.yml" -->
 ## Inputs
 
 | name | description | required | default |
@@ -19,21 +18,16 @@ This action receives a file from Google Drive.
 | `dest_file_name` | <p>The name(path) of the file in local filesystem</p> | `true` | `""` |
 | `dest_mime_type` | <p>The MIME type of the file.</p> | `false` | `""` |
 | `remove_bom` | <p>Remove BOM chars in receiving content</p> | `false` | `""` |
-<!-- action-docs-inputs source="action.yml" -->
 
-<!-- action-docs-outputs source="action.yml" -->
 ## Outputs
 
 | name | description |
 | --- | --- |
 | `file_id` | <p>The ID of the file that is sended into Google Drive. Be careful, the ID of the file can also be sensitive data.</p> |
-<!-- action-docs-outputs source="action.yml" -->
 
-<!-- action-docs-runs source="action.yml" -->
 ## Runs
 
 This action is a `node20` action.
-<!-- action-docs-runs source="action.yml" -->
 
 ## Example usage
 
