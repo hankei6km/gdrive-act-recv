@@ -41,7 +41,7 @@ This action is a `node20` action.
 
 - name: Receive file
   id: receive
-  uses: hankei6km/gdrive-act-recv@v0.6.10
+  uses: hankei6km/gdrive-act-recv@v0.6.11
   with:
     parent_id: ${{ secrets.PARENT_ID }}
     src_file_name: ${{ secrets.SRC_FILE_NAME }}
